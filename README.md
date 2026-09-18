@@ -203,16 +203,6 @@ None of those three touch Unity, so all three are unit tested without the game.
 - `Server`: the listener, the connections and the packet handlers.
 - `Plugin`: the BepInEx entry point, the main thread pump and the chat patch.
 
-## Tests
-
-No Valheim and no Minecraft needed.
-
-```
-dotnet test tests
-```
-
-The tests cover everything that doesn't touch Unity: varints, big endian numbers, position packing, packet framing and the stream reassembler, and chunk columns (section counts, bedrock, surface blocks per biome, water, height clamping and biome bytes). They also cover the creature table, fixed point, angles, UUIDs and the clock. `Server`, `ValheimWorld` and `Plugin` need the running game, so they aren't unit tested.
-
 ## Licence
 
 MIT. Do what you like with it.
