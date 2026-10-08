@@ -70,14 +70,52 @@ Leave the `arch -x86_64` off and the game launches fine with no mods loaded and 
 
 ## Install
 
-**1.** Install BepInExPack Valheim into the Valheim folder and on a Mac set the launch options above. Start the game once and quit, so `BepInEx/plugins` exists.
-
-**2.** Build. The build compiles against your own copy of the game, so nothing from Valheim or BepInEx ships in this repo.
+**1.** Install the .NET SDK, version 8 or newer, from https://dotnet.microsoft.com/download. Make sure you grab the SDK, not the Runtime. On an Apple Silicon Mac pick Arm64, on Windows or an Intel Mac pick x64. Once it's installed, open Terminal on a Mac or PowerShell on Windows and run
 
 ```
-cd McValheim
+dotnet --version
+```
+
+If you get a version number back you're good.
+
+**2.** Install BepInEx. Download BepInExPack Valheim from https://thunderstore.io/c/valheim/p/denikson/BepInExPack_Valheim/ and unzip it. Inside there's a folder called `BepInExPack_Valheim`. Copy everything in that folder into your Valheim folder, so the `BepInEx` folder ends up sitting next to the game.
+
+To find your Valheim folder, right click Valheim in Steam and go to Manage, then Browse local files.
+
+**3.** Set the Steam launch options. Right click Valheim in Steam, open Properties and find Launch Options on the General tab.
+
+On Windows leave the box empty. BepInEx loads on its own through the `winhttp.dll` you just copied in.
+
+On a Mac paste in
+
+```
+/usr/bin/arch -x86_64 /bin/bash ./start_game_bepinex.sh %command%
+```
+
+On Linux paste in
+
+```
+./start_game_bepinex.sh %command%
+```
+
+Start the game and quit, so `BepInEx/plugins` exists. If you want to check BepInEx is actually loading, open `BepInEx/LogOutput.log` in the Valheim folder. The first line should have the date and time you just launched.
+
+**4.** Get the code. If you have Git
+
+```
+git clone https://github.com/hostdit/minecraft-server-in-valheim.git
+cd minecraft-server-in-valheim
+```
+
+If you don't, click the green Code button at the top of this page, pick Download ZIP and unzip it. You'll get a folder called `minecraft-server-in-valheim-main` and you need a terminal open in it. On a Mac type `cd ` in Terminal (with the space), drag the folder onto the window and press Enter. On Windows open the folder, click the address bar, type `powershell` and press Enter.
+
+**5.** Build. The build compiles against your own copy of the game, so nothing from Valheim or BepInEx ships in this repo.
+
+```
 dotnet build -c Release
 ```
+
+The first build downloads a few packages, then you should see `Build succeeded`. A yellow warning about `System.Net.Http` is normal and you can ignore it.
 
 The build copies `McValheim.dll` into `BepInEx/plugins`. If Valheim isn't in the default Steam location, pass the path:
 
@@ -91,9 +129,17 @@ On Windows the game's assemblies are in a different place too, so pass both path
 dotnet build -c Release -p:Valheim="C:\Program Files (x86)\Steam\steamapps\common\Valheim" -p:Managed="C:\Program Files (x86)\Steam\steamapps\common\Valheim\valheim_Data\Managed"
 ```
 
-**3.** Start Valheim and load a world. `BepInEx/LogOutput.log` should say `listening on 25565`.
+Linux is the same idea, with the paths from your Steam library
 
-**4.** Connect Minecraft 1.8.9 to `localhost:25565` via Add Server or Direct Connect.
+```
+dotnet build -c Release -p:Valheim="$HOME/.local/share/Steam/steamapps/common/Valheim" -p:Managed="$HOME/.local/share/Steam/steamapps/common/Valheim/valheim_Data/Managed"
+```
+
+If your Steam library is on another drive, swap in the path from Browse local files. Once it's done you should see `McValheim.dll` in `BepInEx/plugins`.
+
+**6.** Start Valheim and load a world. `BepInEx/LogOutput.log` should say `listening on 25565`.
+
+**7.** Connect Minecraft 1.8.9 to `localhost:25565` via Add Server or Direct Connect.
 
 ### Favicon
 
